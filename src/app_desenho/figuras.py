@@ -179,3 +179,42 @@ class Circulo(Figura):
         if self.raio == 0:
             return True
         return False
+
+class Poligono(Figura):
+
+    # Define a lógica para o desenhos dos poligonos
+    # O polinomio vai funcinar baseado em cliques na tela, onde cada clique é um vertice do poligono
+
+
+    def __init__(self, pontos, cor_borda, cor_preenchimento):
+        self.cor_borda = cor_borda
+        self.cor_preenchimento = cor_preenchimento
+        self.pontos = pontos
+
+    def desenhar(self, canvas):
+        if len(self.pontos) >= 3:
+            pontos_planos = []
+            for pt in self.pontos:
+                pontos_planos.append(pt[0])
+                pontos_planos.append(pt[1])
+
+            canvas.create_polygon(
+                pontos_planos,
+                outline=self.cor_borda,
+                fill=self.cor_preenchimento,
+            )
+
+    def desenhar_nova(self, canvas):
+        if len(self.pontos) >= 1:
+            pontos_planos = []
+            for pt in self.pontos:
+                pontos_planos.append(pt[0])
+                pontos_planos.append(pt[1])
+
+            if len(pontos_planos) >= 4:
+                canvas.create_line(pontos_planos, fill=self.cor_borda, dash=(4, 2))
+
+    def incompleta(self):
+        if len(self.pontos) < 3:
+            return True
+        return False
