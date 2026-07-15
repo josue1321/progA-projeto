@@ -1,152 +1,148 @@
 class FiguraController:
-    def __init__(self):
-
-
+    def __init__(self, model):
+        self.model = model
 
     def desenhar(self, canvas):
-        pass
+        tipo = self.model.tipo
+
+        match tipo:
+            case "linha":
+                canvas.create_line(
+                    self.model.ini_x,
+                    self.model.ini_y,
+                    self.model.fin_x,
+                    self.model.fin_y,
+                    fill=self.model.cor_borda,
+                )
+
+            case "rabisco":
+                if len(self.model.pontos) > 1:
+                    canvas.create_line(self.model.pontos, fill=self.model.cor_borda)
+
+            case "retangulo":
+                canvas.create_rectangle(
+                    self.model.ini_x,
+                    self.model.ini_y,
+                    self.model.fin_x,
+                    self.model.fin_y,
+                    outline=self.model.cor_borda,
+                    fill=self.model.cor_preenchimento,
+                )
+
+            case "oval":
+                canvas.create_oval(
+                    self.model.ini_x,
+                    self.model.ini_y,
+                    self.model.fin_x,
+                    self.model.fin_y,
+                    outline=self.model.cor_borda,
+                    fill=self.model.cor_preenchimento,
+                )
+
+            case "circulo":
+                if self.model.raio is not None:
+                    canvas.create_oval(
+                        self.model.ini_x - self.model.raio,
+                        self.model.ini_y - self.model.raio,
+                        self.model.ini_x + self.model.raio,
+                        self.model.ini_y + self.model.raio,
+                        outline=self.model.cor_borda,
+                        fill=self.model.cor_preenchimento,
+                    )
+
+            case "poligono":
+                if len(self.model.pontos) >= 3:
+                    # Transforma a lista de tuplas numa lista plana [x1, y1, x2, y2...]
+                    pontos_planos = [coord for pt in self.model.pontos for coord in pt]
+                    canvas.create_polygon(
+                        pontos_planos,
+                        outline=self.model.cor_borda,
+                        fill=self.model.cor_preenchimento,
+                    )
 
     def desenhar_nova(self, canvas):
-        pass
+        tipo = self.model.tipo
+
+        match tipo:
+            case "linha":
+                canvas.create_line(
+                    self.model.ini_x,
+                    self.model.ini_y,
+                    self.model.fin_x,
+                    self.model.fin_y,
+                    fill=self.model.cor_borda,
+                    dash=(4, 2),
+                )
+
+            case "rabisco":
+                if len(self.model.pontos) > 1:
+                    canvas.create_line(
+                        self.model.pontos, fill=self.model.cor_borda, dash=(4, 2)
+                    )
+
+            case "retangulo":
+                canvas.create_rectangle(
+                    self.model.ini_x,
+                    self.model.ini_y,
+                    self.model.fin_x,
+                    self.model.fin_y,
+                    outline=self.model.cor_borda,
+                    fill=self.model.cor_preenchimento,
+                    dash=(4, 2),
+                )
+
+            case "oval":
+                canvas.create_oval(
+                    self.model.ini_x,
+                    self.model.ini_y,
+                    self.model.fin_x,
+                    self.model.fin_y,
+                    outline=self.model.cor_borda,
+                    fill=self.model.cor_preenchimento,
+                    dash=(4, 2),
+                )
+
+            case "circulo":
+                if self.model.raio is not None:
+                    canvas.create_oval(
+                        self.model.ini_x - self.model.raio,
+                        self.model.ini_y - self.model.raio,
+                        self.model.ini_x + self.model.raio,
+                        self.model.ini_y + self.model.raio,
+                        outline=self.model.cor_borda,
+                        fill=self.model.cor_preenchimento,
+                        dash=(4, 2),
+                    )
+
+            case "poligono":
+                if len(self.model.pontos) >= 1:
+                    pontos_planos = [coord for pt in self.model.pontos for coord in pt]
+                    if len(pontos_planos) >= 4:
+                        canvas.create_line(
+                            pontos_planos, fill=self.model.cor_borda, dash=(4, 2)
+                        )
 
     def incompleta(self) -> bool:
-        return False
+        tipo = self.model.tipo
 
-    
-    # Linha
-    def desenhar(self, canvas):
-        canvas.create_line(self.x1, self.y1, self.x2, self.y2, fill=self.cor_borda)
-
-    def desenhar_nova(self, canvas):
-        canvas.create_line(
-            self.x1, self.y1, self.x2, self.y2, fill=self.cor_borda, dash=(4, 2)
-        )
-
-    def incompleta(self):
-        if (self.x1, self.y1) == (self.x2, self.y2):
-            return True
-        return False
-
-    # Rabisco
-    def desenhar(self, canvas):
-        if len(self.pontos) > 1:
-            canvas.create_line(self.pontos, fill=self.cor_borda)
-
-    def desenhar_nova(self, canvas):
-        if len(self.pontos) > 1:
-            canvas.create_line(self.pontos, fill=self.cor_borda, dash=(4, 2))
-
-    def incompleta(self):
-        if len(self.pontos) <= 1:
-            return True
-        return False
-
-    # Retangulo
-    def desenhar(self, canvas):
-        canvas.create_rectangle(
-            self.x1,
-            self.y1,
-            self.x2,
-            self.y2,
-            outline=self.cor_borda,
-            fill=self.cor_preenchimento,
-        )
-
-    def desenhar_nova(self, canvas):
-        canvas.create_rectangle(
-            self.x1,
-            self.y1,
-            self.x2,
-            self.y2,
-            outline=self.cor_borda,
-            fill=self.cor_preenchimento,
-            dash=(4, 2),
-        )
-
-    def incompleta(self):
-        if (self.x1, self.y1) == (self.x2, self.y2):
-            return True
-        return False
- 
-    # Oval
-    def desenhar(self, canvas):
-        canvas.create_oval(
-            self.x1,
-            self.y1,
-            self.x2,
-            self.y2,
-            outline=self.cor_borda,
-            fill=self.cor_preenchimento,
-        )
-
-    def desenhar_nova(self, canvas):
-        canvas.create_oval(
-            self.x1,
-            self.y1,
-            self.x2,
-            self.y2,
-            outline=self.cor_borda,
-            fill=self.cor_preenchimento,
-            dash=(4, 2),
-        )
-
-    def incompleta(self):
-        if (self.x1, self.y1) == (self.x2, self.y2):
-            return True
-        return False
-
-    # Circulo
-    def desenhar(self, canvas):
-        canvas.create_oval(
-            self.x - self.raio,
-            self.y - self.raio,
-            self.x + self.raio,
-            self.y + self.raio,
-            outline=self.cor_borda,
-            fill=self.cor_preenchimento,
-        )
-
-    def desenhar_nova(self, canvas):
-        canvas.create_oval(
-            self.x - self.raio,
-            self.y - self.raio,
-            self.x + self.raio,
-            self.y + self.raio,
-            outline=self.cor_borda,
-            fill=self.cor_preenchimento,
-            dash=(4, 2),
-        )
-
-    def incompleta(self):
-        if self.raio == 0:
-            return True
-        return False
-
-    # Poligono
-    def desenhar(self, canvas):
-            if len(self.pontos) >= 3:
-                pontos_planos = []
-                for pt in self.pontos:
-                    pontos_planos.append(pt[0])
-                    pontos_planos.append(pt[1])
-    
-                canvas.create_polygon(
-                    pontos_planos,
-                    outline=self.cor_borda,
-                    fill=self.cor_preenchimento,
+        match tipo:
+            case "linha" | "retangulo" | "oval":
+                # Verifica se os pontos finais existem e se não são iguais aos iniciais
+                if self.model.fin_x is None or self.model.fin_y is None:
+                    return True
+                return (self.model.ini_x, self.model.ini_y) == (
+                    self.model.fin_x,
+                    self.model.fin_y,
                 )
-    
-        def desenhar_nova(self, canvas):
-            if len(self.pontos) >= 1:
-                pontos_planos = []
-                for pt in self.pontos:
-                    pontos_planos.append(pt[0])
-                    pontos_planos.append(pt[1])
-    
-                if len(pontos_planos) >= 4:
-                    canvas.create_line(pontos_planos, fill=self.cor_borda, dash=(4, 2))
-    
-        def incompleta(self):
-            if len(self.pontos) < 3:
-                return True
-            return False
+
+            case "rabisco":
+                return len(self.model.pontos) <= 1
+
+            case "circulo":
+                return self.model.raio == 0 or self.model.raio is None
+
+            case "poligono":
+                return len(self.model.pontos) < 3
+
+            case _:
+                return False
