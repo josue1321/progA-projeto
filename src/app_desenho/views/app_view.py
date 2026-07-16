@@ -9,13 +9,7 @@ class AppDesenho:
         self.root = root
         self.root.title("Aplicativo de Desenho")
 
-        self.figuras = []
-        self.figura_nova = None
-        self.pontos_poligono_atual = []
-        self.ferramenta_atual = ""
-
         self.configurar_interface()
-        self.vincular_eventos()
 
     # Função que cria os botões, menus de cores e a área branca de desenho
     def configurar_interface(self):
@@ -170,10 +164,3 @@ class AppDesenho:
 
         for f in self.figuras:
             f.desenhar(self.canvas)
-
-    # Função que reinicia todo o programa
-    def reset(self, event):
-        self.figuras.clear()
-        self.figura_nova = None
-        self.pontos_poligono_atual = []
-        self.canvas.delete("all")
