@@ -1,17 +1,13 @@
 from tkinter import Tk, Canvas, Frame, StringVar, ttk, W
 
-
-class AppDesenho:
-    def __init__(
-        self,
-        root,
-    ):
+class AppDesenhoView:
+    def __init__(self, root):
         self.root = root
         self.root.title("Aplicativo de Desenho")
 
+        # Chama a função que constrói a tela
         self.configurar_interface()
 
-    # Função que cria os botões, menus de cores e a área branca de desenho
     def configurar_interface(self):
         self.frame = Frame(self.root)
         self.frame.pack()
@@ -60,107 +56,5 @@ class AppDesenho:
             "blue",
         ).grid(column=1, row=2, sticky=W, **paddings)
 
-        # Cria o quadro branco que os desenhos serão feitos
         self.canvas = Canvas(self.frame, bg="white", width=600, height=600)
         self.canvas.grid(column=0, row=3, columnspan=2, sticky=W, **paddings)
-
-    # Função que liga os cliques do mouse às funções do código
-    def vincular_eventos(self):
-
-        self.canvas.bind("<ButtonPress-1>", self.tratar_clique)
-        self.canvas.bind("<B1-Motion>", self.tratar_arrasto)
-        self.canvas.bind("<ButtonRelease-1>", self.tratar_soltar)
-        self.canvas.bind("<Double-Button-1>", self.finalizar_poligono)
-        self.canvas.bind("<ButtonPress-3>", self.reset)
-
-    # Função que roda assim que o usuário clica no Canvas
-    def tratar_clique(self, event):
-        # Pega o que está selecionado nos menus do Tkinter
-        tipo = self.tipo_figura_var.get()
-        cor_borda = self.cor_lapis_var.get()
-        cor_preench = self.cor_preenchimento_var.get()
-        self.ferramenta_atual = tipo
-
-        # Implementa a lógica do polígono, ele funciona unindo cliques em locais diferentes da forma, tratando esses pontos como vértices
-        if tipo == "poligono":
-            self.pontos_poligono_atual.append((event.x, event.y))
-            self.figura_nova = Poligono(
-                list(self.pontos_poligono_atual), cor_borda, cor_preench
-            )
-            self.desenhar_figuras()
-            self.figura_nova.desenhar_nova(self.canvas)
-        else:
-            self.pontos_poligono_atual = []
-
-            if tipo == "linha":
-                self.figura_nova = Linha(
-                    event.x, event.y, event.x, event.y, cor_borda, cor_preench
-                )
-            elif tipo == "retangulo":
-                self.figura_nova = Retangulo(
-                    event.x, event.y, event.x, event.y, cor_borda, cor_preench
-                )
-            elif tipo == "oval":
-                self.figura_nova = Oval(
-                    event.x, event.y, event.x, event.y, cor_borda, cor_preench
-                )
-            elif tipo == "circulo":
-                self.figura_nova = Circulo(event.x, event.y, 0, cor_borda, cor_preench)
-            elif tipo == "rabisco":
-                self.figura_nova = Rabisco(
-                    [(event.x, event.y)], cor_borda, cor_preench
-                )
-
-    # Função que roda enquanto o usuário arrasta o mouse pela tela
-    def tratar_arrasto(self, event):
-        if self.figura_nova == None or self.ferramenta_atual == "poligono":
-            return
-
-        if self.ferramenta_atual == "rabisco":
-            self.figura_nova.pontos.append((event.x, event.y))
-
-        elif self.ferramenta_atual == "circulo":
-            distancia = (self.figura_nova.x - event.x) ** 2 + (
-                self.figura_nova.y - event.y
-            ) ** 2
-            raio = distancia**0.5
-            self.figura_nova.raio = raio
-
-        elif (
-            self.ferramenta_atual == "linha"
-            or self.ferramenta_atual == "retangulo"
-            or self.ferramenta_atual == "oval"
-        ):
-            self.figura_nova.x2 = event.x
-            self.figura_nova.y2 = event.y
-
-        self.desenhar_figuras()
-        self.figura_nova.desenhar_nova(self.canvas)
-
-    # Função que roda quando o usuário solta o botão do mouse
-    def tratar_soltar(self, event):
-        if self.ferramenta_atual == "poligono":
-            return
-
-        if self.figura_nova != None:
-            if self.figura_nova.incompleta() == False:
-                self.figuras.append(self.figura_nova)
-
-        self.figura_nova = None
-        self.desenhar_figuras()
-
-    # Função que finaliza o poligono com dois cliques na tela
-    def finalizar_poligono(self, event):
-        if self.ferramenta_atual == "poligono" and self.figura_nova != None:
-            if self.figura_nova.incompleta() == False:
-                self.figuras.append(self.figura_nova)
-
-            self.figura_nova = None
-            self.pontos_poligono_atual = []
-            self.desenhar_figuras()
-
-    def desenhar_figuras(self):
-        self.canvas.delete("all")
-
-        for f in self.figuras:
-            f.desenhar(self.canvas)
