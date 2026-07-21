@@ -2,9 +2,7 @@ class CanvaModel:
     def __init__(self):
         self.figuras = []
         self.figura_nova = None
-        self.pontos_poligono_atual = []
-        
-        self.ferramenta_atual = "linha"
+
         self.cor_borda_atual = "black"
         self.cor_preenchimento_atual = "white"
 
@@ -15,7 +13,6 @@ class CanvaModel:
 
     def limpar_estado(self):
         self.figura_nova = None
-        self.pontos_poligono_atual = []
 
     def resetar_canva(self):
         self.figuras.clear()
