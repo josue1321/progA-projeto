@@ -19,7 +19,7 @@ class AppDesenhoView:
         self.tipo_figura_var = StringVar(self.root)
 
         # Cria o menu para escolher a figura
-        option_menu = ttk.OptionMenu(
+        ttk.OptionMenu(
             self.frame,
             self.tipo_figura_var,
             "linha",
@@ -29,10 +29,9 @@ class AppDesenhoView:
             "retangulo",
             "oval",
             "poligono",
-        )
-        option_menu.grid(column=1, row=0, sticky=W, **paddings)
+        ).grid(column=1, row=0, sticky=W, **paddings)
 
-        # Cria o menu para selecionr a cor da borda
+        # Cria o menu para selecionar a cor da borda
         ttk.Label(self.frame, text="Cor da Borda:").grid(
             column=0, row=1, sticky=W, **paddings
         )
@@ -56,5 +55,14 @@ class AppDesenhoView:
             "blue",
         ).grid(column=1, row=2, sticky=W, **paddings)
 
+        frame_botoes = Frame(self.frame)
+        frame_botoes.grid(column=0, row=3, columnspan=2, sticky=W, **paddings)
+
+        self.btn_salvar = ttk.Button(frame_botoes, text="Salvar Desenho")
+        self.btn_salvar.pack(side="left", padx=5)
+
+        self.btn_abrir = ttk.Button(frame_botoes, text="Abrir Desenho")
+        self.btn_abrir.pack(side="left", padx=5)
+
         self.canvas = Canvas(self.frame, bg="white", width=600, height=600)
-        self.canvas.grid(column=0, row=3, columnspan=2, sticky=W, **paddings)
+        self.canvas.grid(column=0, row=4, columnspan=2, sticky=W, **paddings)
